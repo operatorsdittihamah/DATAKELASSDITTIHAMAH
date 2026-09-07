@@ -212,7 +212,27 @@
         </div>
         <div class="form-group">
           <label>Ruang Kelas</label>
-          <input type="text" name="ruangKelas" placeholder="Misal: Gedung A - R.101" required>
+          <select name="ruangKelas" required>
+            <option value="" disabled selected>-- Pilih Ruang Kelas --</option>
+            <option value="Ruang Kelas 1A">Ruang Kelas 1A</option>
+            <option value="Ruang Kelas 1B">Ruang Kelas 1B</option>
+            <option value="Ruang Kelas 1C">Ruang Kelas 1C</option>
+            <option value="Ruang Kelas 2A">Ruang Kelas 2A</option>
+            <option value="Ruang Kelas 2B">Ruang Kelas 2B</option>
+            <option value="Ruang Kelas 2C">Ruang Kelas 2C</option>
+            <option value="Ruang Kelas 3A">Ruang Kelas 3A</option>
+            <option value="Ruang Kelas 3B">Ruang Kelas 3B</option>
+            <option value="Ruang Kelas 3C">Ruang Kelas 3C</option>
+            <option value="Ruang Kelas 4A">Ruang Kelas 4A</option>
+            <option value="Ruang Kelas 4B">Ruang Kelas 4B</option>
+            <option value="Ruang Kelas 4C">Ruang Kelas 4C</option>
+            <option value="Ruang Kelas 5A">Ruang Kelas 5A</option>
+            <option value="Ruang Kelas 5B">Ruang Kelas 5B</option>
+            <option value="Ruang Kelas 5C">Ruang Kelas 5C</option>
+            <option value="Ruang Kelas 6A">Ruang Kelas 6A</option>
+            <option value="Ruang Kelas 6B">Ruang Kelas 6B</option>
+            <option value="Ruang Kelas 6C">Ruang Kelas 6C</option>
+          </select>
         </div>
       </div>
       <button type="submit" id="btnSubmit" class="btn btn-submit">Simpan</button>
@@ -221,7 +241,6 @@
   </div>
 
   <div class="card">
-    <h2>Daftar Data Kelas dari Google Sheets</h2>
     <div id="loading">Memuat data dari Google Sheets...</div>
     <div class="table-responsive">
       <table>
@@ -295,7 +314,26 @@
         </div>
         <div class="form-group">
           <label>Ruang Kelas</label>
-          <input type="text" id="editRuangKelas" name="ruangKelas" required>
+          <select id="editRuangKelas" name="ruangKelas" required>
+            <option value="Ruang Kelas 1A">Ruang Kelas 1A</option>
+            <option value="Ruang Kelas 1B">Ruang Kelas 1B</option>
+            <option value="Ruang Kelas 1C">Ruang Kelas 1C</option>
+            <option value="Ruang Kelas 2A">Ruang Kelas 2A</option>
+            <option value="Ruang Kelas 2B">Ruang Kelas 2B</option>
+            <option value="Ruang Kelas 2C">Ruang Kelas 2C</option>
+            <option value="Ruang Kelas 3A">Ruang Kelas 3A</option>
+            <option value="Ruang Kelas 3B">Ruang Kelas 3B</option>
+            <option value="Ruang Kelas 3C">Ruang Kelas 3C</option>
+            <option value="Ruang Kelas 4A">Ruang Kelas 4A</option>
+            <option value="Ruang Kelas 4B">Ruang Kelas 4B</option>
+            <option value="Ruang Kelas 4C">Ruang Kelas 4C</option>
+            <option value="Ruang Kelas 5A">Ruang Kelas 5A</option>
+            <option value="Ruang Kelas 5B">Ruang Kelas 5B</option>
+            <option value="Ruang Kelas 5C">Ruang Kelas 5C</option>
+            <option value="Ruang Kelas 6A">Ruang Kelas 6A</option>
+            <option value="Ruang Kelas 6B">Ruang Kelas 6B</option>
+            <option value="Ruang Kelas 6C">Ruang Kelas 6C</option>
+          </select>
         </div>
       </div>
       <div style="margin-top: 20px; text-align: right;">
@@ -308,7 +346,7 @@
 </div>
 
 <script>
-  const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxI1u-DSjN78h9qxmeeX3oz3ZF29UhlFlS9jgB3DoUuOewRkbwFQz4HeHPjvdWGE-oJ/exec";
+  const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycby77q_G6xPMCliQ2ir1ZuAn3obvfQRNxtK9wM4569PR1_SrYyBy86mb87ECy2jy0Cp8/exec";
   let globalData = [];
 
   // Submit Form Tambah Data
