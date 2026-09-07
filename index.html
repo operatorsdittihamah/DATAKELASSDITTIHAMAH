@@ -14,14 +14,12 @@
       color: #0f172a; 
     }
 
-    /* Container Full Width untuk menghilangkan ruang kosong samping */
     .container { 
       width: 100%; 
       max-width: 100%; 
       margin: 0 auto; 
     }
     
-    /* Header Full Width & Rata Tengah */
     header { 
       background: linear-gradient(135deg, #0d7015 0%, #05470b 100%); 
       color: white; 
@@ -45,7 +43,6 @@
     header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
     header p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
     
-    /* Card Melebar Penuh */
     .card { 
       background: white; 
       padding: 24px; 
@@ -65,7 +62,6 @@
       margin-bottom: 20px;
     }
     
-    /* Grid Form Melebar Mengisi Ruang */
     .form-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -84,19 +80,47 @@
     .btn { 
       background: #0d7015; 
       color: white; 
-      padding: 12px 24px; 
+      padding: 10px 18px; 
       border: none; 
       border-radius: 6px; 
       font-weight: 600; 
       font-size: 14px;
       cursor: pointer; 
-      margin-top: 16px; 
       transition: background 0.2s;
     }
     .btn:hover { background: #0a5a11; }
     .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-submit { margin-top: 16px; }
+
+    /* Tombol Aksi */
+    .btn-edit { background: #eab308; color: #0f172a; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-edit:hover { background: #ca8a04; color: white; }
+    .btn-delete { background: #ef4444; color: white; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 4px; }
+    .btn-delete:hover { background: #dc2626; }
+    .btn-close { background: #64748b; color: white; padding: 10px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .btn-close:hover { background: #475569; }
+
+    /* Styling Modal Popup Edit */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
+      padding: 20px;
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 2% auto;
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
     
-    /* Pembungkus Tabel Lebar Maksimal */
     .table-responsive {
       width: 100%;
       overflow-x: auto;
@@ -107,7 +131,7 @@
 
     table { 
       width: 100%; 
-      min-width: 1000px; 
+      min-width: 1100px; 
       border-collapse: collapse; 
       font-size: 13px; 
     }
@@ -126,7 +150,7 @@
     tr:nth-child(even) { background-color: #f8fafc; }
     .col-center { text-align: center; }
     
-    #statusForm { margin-top: 12px; font-weight: bold; }
+    #statusForm, #statusEdit { margin-top: 12px; font-weight: bold; }
     #loading { font-style: italic; color: #64748b; margin-top: 8px; margin-bottom: 8px; }
   </style>
 </head>
@@ -191,7 +215,7 @@
           <input type="text" name="ruangKelas" placeholder="Misal: Gedung A - R.101" required>
         </div>
       </div>
-      <button type="submit" id="btnSubmit" class="btn">Simpan</button>
+      <button type="submit" id="btnSubmit" class="btn btn-submit">Simpan</button>
     </form>
     <div id="statusForm"></div>
   </div>
@@ -214,6 +238,7 @@
             <th class="col-center">P</th>
             <th class="col-center">Total</th>
             <th>Ruang Kelas</th>
+            <th class="col-center">Aksi</th>
           </tr>
         </thead>
         <tbody id="tabelBody"></tbody>
@@ -222,9 +247,71 @@
   </div>
 </div>
 
-<script>
-  const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxHlp87WFq667w8y76EIIjJsKAWL63bXKJhm7GZcJSEEGFZn61EgW9eghLWos5JYic/exec";
+<!-- Modal Edit Data -->
+<div id="modalEdit" class="modal">
+  <div class="modal-content">
+    <h2 style="color:#0d7015; border-bottom:3px solid #0d7015; padding-bottom:8px; margin-top:0;">Edit Data Kelas</h2>
+    <form id="formEditKelas">
+      <input type="hidden" id="editRowIndex" name="rowIndex">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama Kelas</label>
+          <input type="text" id="editNamaKelas" name="namaKelas" required>
+        </div>
+        <div class="form-group">
+          <label>Tingkat</label>
+          <select id="editTingkat" name="tingkat" required>
+            <option value="Tingkat 1">Tingkat 1</option>
+            <option value="Tingkat 2">Tingkat 2</option>
+            <option value="Tingkat 3">Tingkat 3</option>
+            <option value="Tingkat 4">Tingkat 4</option>
+            <option value="Tingkat 5">Tingkat 5</option>
+            <option value="Tingkat 6">Tingkat 6</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Wali Kelas</label>
+          <input type="text" id="editWaliKelas" name="waliKelas" required>
+        </div>
+        <div class="form-group">
+          <label>Guru PJOK</label>
+          <input type="text" id="editGuruPJOK" name="guruPJOK" required>
+        </div>
+        <div class="form-group">
+          <label>Guru PAI</label>
+          <input type="text" id="editGuruPAI" name="guruPAI" required>
+        </div>
+        <div class="form-group">
+          <label>Guru Bahasa Inggris</label>
+          <input type="text" id="editGuruInggris" name="guruInggris" required>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Siswa Laki-laki (L)</label>
+          <input type="number" id="editJumlahL" name="jumlahL" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Siswa Perempuan (P)</label>
+          <input type="number" id="editJumlahP" name="jumlahP" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Ruang Kelas</label>
+          <input type="text" id="editRuangKelas" name="ruangKelas" required>
+        </div>
+      </div>
+      <div style="margin-top: 20px; text-align: right;">
+        <button type="button" class="btn-close" onclick="tutupModal()">Batal</button>
+        <button type="submit" id="btnUpdate" class="btn">Update Data</button>
+      </div>
+    </form>
+    <div id="statusEdit"></div>
+  </div>
+</div>
 
+<script>
+  const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwFMA4FkkJPQX4Juh1gs-l0T3qI7NEG7FybAH9qD3Qf7rKumEPg2X4s29nJrzUsLp0/exec";
+  let globalData = [];
+
+  // Submit Form Tambah Data
   document.getElementById("formKelas").addEventListener("submit", function(e) {
     e.preventDefault();
     
@@ -237,6 +324,7 @@
 
     const formData = new FormData(this);
     const dataObj = Object.fromEntries(formData.entries());
+    dataObj.action = "create";
 
     fetch(URL_APPS_SCRIPT, {
       method: "POST",
@@ -262,6 +350,48 @@
     });
   });
 
+  // Submit Form Edit Data
+  document.getElementById("formEditKelas").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById("btnUpdate");
+    const statusDiv = document.getElementById("statusEdit");
+    
+    btn.disabled = true;
+    statusDiv.style.color = "#64748b";
+    statusDiv.innerText = "Memperbarui data...";
+
+    const formData = new FormData(this);
+    const dataObj = Object.fromEntries(formData.entries());
+    dataObj.action = "update";
+
+    fetch(URL_APPS_SCRIPT, {
+      method: "POST",
+      body: JSON.stringify(dataObj)
+    })
+    .then(res => res.json())
+    .then(response => {
+      btn.disabled = false;
+      if (response.status === "success") {
+        statusDiv.style.color = "green";
+        statusDiv.innerText = response.message;
+        setTimeout(() => {
+          tutupModal();
+          muatDataTabel();
+        }, 800);
+      } else {
+        statusDiv.style.color = "red";
+        statusDiv.innerText = "Gagal: " + response.message;
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      statusDiv.style.color = "red";
+      statusDiv.innerText = "Terjadi kesalahan: " + err;
+    });
+  });
+
+  // Fungsi Muat Data dari Apps Script
   function muatDataTabel() {
     const loadingDiv = document.getElementById("loading");
     loadingDiv.style.display = "block";
@@ -270,11 +400,12 @@
       .then(res => res.json())
       .then(data => {
         loadingDiv.style.display = "none";
+        globalData = data;
         const tbody = document.getElementById("tabelBody");
         tbody.innerHTML = "";
 
         if (!data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="11" class="col-center">Belum ada data di Google Sheets.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="12" class="col-center">Belum ada data di Google Sheets.</td></tr>';
           return;
         }
 
@@ -292,6 +423,10 @@
             <td class="col-center" style="color:#be185d; font-weight:bold;">${row.jumlahP}</td>
             <td class="col-center"><strong>${row.totalSiswa}</strong></td>
             <td>${row.ruangKelas}</td>
+            <td class="col-center">
+              <button class="btn-edit" onclick="bukaModalEdit(${index})">Edit</button>
+              <button class="btn-delete" onclick="hapusData(${row.rowIndex}, '${row.namaKelas}')">Hapus</button>
+            </td>
           `;
           tbody.appendChild(tr);
         });
@@ -299,6 +434,53 @@
       .catch(err => {
         loadingDiv.innerText = "Gagal memuat data dari spreadsheet.";
       });
+  }
+
+  // Fungsi Buka Modal Edit
+  function bukaModalEdit(index) {
+    const item = globalData[index];
+    document.getElementById("editRowIndex").value = item.rowIndex;
+    document.getElementById("editNamaKelas").value = item.namaKelas;
+    document.getElementById("editTingkat").value = item.tingkat;
+    document.getElementById("editWaliKelas").value = item.waliKelas;
+    document.getElementById("editGuruPJOK").value = item.guruPJOK;
+    document.getElementById("editGuruPAI").value = item.guruPAI;
+    document.getElementById("editGuruInggris").value = item.guruInggris;
+    document.getElementById("editJumlahL").value = item.jumlahL;
+    document.getElementById("editJumlahP").value = item.jumlahP;
+    document.getElementById("editRuangKelas").value = item.ruangKelas;
+    document.getElementById("statusEdit").innerText = "";
+
+    document.getElementById("modalEdit").style.display = "block";
+  }
+
+  function tutupModal() {
+    document.getElementById("modalEdit").style.display = "none";
+  }
+
+  // Fungsi Hapus Data
+  function hapusData(rowIndex, namaKelas) {
+    if (confirm(`Apakah Anda yakin ingin menghapus data "${namaKelas}"?`)) {
+      const payload = {
+        action: "delete",
+        rowIndex: rowIndex
+      };
+
+      fetch(URL_APPS_SCRIPT, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.status === "success") {
+          alert("Data berhasil dihapus!");
+          muatDataTabel();
+        } else {
+          alert("Gagal menghapus data: " + response.message);
+        }
+      })
+      .catch(err => alert("Terjadi kesalahan: " + err));
+    }
   }
 
   window.onload = muatDataTabel;
